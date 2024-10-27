@@ -73,10 +73,10 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Ignore .cache except calibration
+# Ignore .cache 
 .cache/*
-!.cache/calibration/
-!.cache/calibration/**
+#!.cache/calibration/
+#!.cache/calibration/**
 
 # Translations
 *.mo
@@ -153,3 +153,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# SO100 robot configs
+configs/robot/so100.yaml
+lerobot/configs/robot/so100.yaml
