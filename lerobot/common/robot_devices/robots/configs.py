@@ -22,10 +22,13 @@ from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
+    MujocoCameraConfig,
+    
 )
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
     FeetechMotorsBusConfig,
+    MujocoMotorsBusConfig,
     MotorsBusConfig,
 )
 
@@ -670,6 +673,63 @@ class LeKiwiRobotConfig(RobotConfig):
             "speed_down": "f",
             # quit teleop
             "quit": "q",
+        }
+    )
+
+    mock: bool = False
+
+
+@RobotConfig.register_subclass("sim-so100")
+@dataclass
+class So100RobotConfig(ManipulatorRobotConfig):
+    calibration_dir: str = ".cache/calibration/so100"
+    # `max_relative_target` limits the magnitude of the relative positional target vector for safety purposes.
+    # Set this to a positive scalar to have the same value for all motors, or a list that is the same length as
+    # the number of motors in your follower arms.
+    max_relative_target: int | None = None
+
+    leader_arms: dict[str, MotorsBusConfig] = field(
+        default_factory=lambda: {
+            "main": FeetechMotorsBusConfig(
+                port="/dev/tty.usbmodem58760431091",
+                motors={
+                    # name: (index, model)
+                    "shoulder_pan": [1, "sts3215"],
+                    "shoulder_lift": [2, "sts3215"],
+                    "elbow_flex": [3, "sts3215"],
+                    "wrist_flex": [4, "sts3215"],
+                    "wrist_roll": [5, "sts3215"],
+                    "gripper": [6, "sts3215"],
+                },
+            ),
+        }
+    )
+
+    follower_arms: dict[str, MotorsBusConfig] = field(
+        default_factory=lambda: {
+            "main": MujocoMotorsBusConfig(
+                port="/dev/tty.usbmodem585A0076891",
+                motors={
+                    # name: (index, model)
+                    "shoulder_pan": [1, "sim"],
+                    "shoulder_lift": [2, "sim"],
+                    "elbow_flex": [3, "sim"],
+                    "wrist_flex": [4, "sim"],
+                    "wrist_roll": [5, "sim"],
+                    "gripper": [6, "sim"],
+                },
+            ),
+        }
+    )
+
+    cameras: dict[str, CameraConfig] = field(
+        default_factory=lambda: {
+            "laptop": MujocoCameraConfig(
+                camera_index=0,
+                fps=30,
+                width=640,
+                height=480,
+            ),
         }
     )
 

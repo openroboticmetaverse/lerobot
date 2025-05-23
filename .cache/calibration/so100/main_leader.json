@@ -1,0 +1,1 @@
+{"homing_offset": [-3043, 1939, -1982, -1976, 3098, -446], "drive_mode": [0, 1, 0, 0, 1, 0], "start_pos": [3044, 1879, 2113, 1914, 3122, 465], "end_pos": [4067, -915, 3006, 3000, -2074, 1470], "calib_mode": ["DEGREE", "DEGREE", "DEGREE", "DEGREE", "DEGREE", "LINEAR"], "motor_names": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"]}
