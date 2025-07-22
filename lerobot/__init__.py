@@ -183,18 +183,21 @@ available_robots = [
     "so100",
     "so101",
     "moss",
+    "sim-so100"
 ]
 
 # lists all available cameras from `lerobot/common/robot_devices/cameras`
 available_cameras = [
     "opencv",
     "intelrealsense",
+    "simulated"
 ]
 
 # lists all available motors from `lerobot/common/robot_devices/motors`
 available_motors = [
     "dynamixel",
     "feetech",
+    "simulated"
 ]
 
 # keys and values refer to yaml files

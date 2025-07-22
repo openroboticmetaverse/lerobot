@@ -24,6 +24,7 @@ from contextlib import nullcontext
 from copy import copy
 from functools import cache
 
+import cv2
 import rerun as rr
 import torch
 from deepdiff import DeepDiff
@@ -58,11 +59,11 @@ def log_control_info(robot: Robot, dt_s, episode_index=None, frame_index=None, f
     log_dt("dt", dt_s)
 
     # TODO(aliberts): move robot-specific logs logic in robot.print_logs()
-    if not robot.robot_type.startswith("stretch"):
-        for name in robot.leader_arms:
-            key = f"read_leader_{name}_pos_dt_s"
-            if key in robot.logs:
-                log_dt("dtRlead", robot.logs[key])
+    if not robot.robot_type.startswith("stretch") and not robot.robot_type.startswith("sim-so100"):
+        # for name in robot.leader_arms:
+        #     key = f"read_leader_{name}_pos_dt_s"
+        #     if key in robot.logs:
+        #         log_dt("dtRlead", robot.logs[key])
 
         for name in robot.follower_arms:
             key = f"write_follower_{name}_goal_pos_dt_s"
@@ -279,7 +280,10 @@ def control_loop(
 
             image_keys = [key for key in observation if "image" in key]
             for key in image_keys:
-                rr.log(key, rr.Image(observation[key].numpy()), static=True)
+                rr.log(key,
+                    rr.Image(observation[key].numpy()).compress(jpeg_quality=75), static=True
+                )
+
 
         if fps is not None:
             dt_s = time.perf_counter() - start_loop_t
@@ -310,9 +314,11 @@ def reset_environment(robot, events, reset_time_s, fps):
 
 def stop_recording(robot, listener, display_data):
     robot.disconnect()
+    print("Robot disconnected")
 
     if not is_headless() and listener is not None:
         listener.stop()
+        print("listner stopped")
 
 
 def sanity_check_dataset_name(repo_id, policy_cfg):

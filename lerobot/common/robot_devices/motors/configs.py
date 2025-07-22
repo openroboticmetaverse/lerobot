@@ -14,6 +14,7 @@
 
 import abc
 from dataclasses import dataclass
+from typing import Dict, Any
 
 import draccus
 
@@ -39,3 +40,9 @@ class FeetechMotorsBusConfig(MotorsBusConfig):
     port: str
     motors: dict[str, tuple[int, str]]
     mock: bool = False
+
+@MotorsBusConfig.register_subclass("simulated")
+@dataclass
+class SimulatedMotorsBusConfig(MotorsBusConfig):
+    handle: str
+    params: dict

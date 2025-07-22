@@ -21,6 +21,7 @@ from lerobot.common.robot_devices.cameras.configs import (
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
 )
+from typing import Dict
 
 
 # Defines a camera type

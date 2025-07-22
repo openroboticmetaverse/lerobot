@@ -22,10 +22,13 @@ from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
+    MujocoCameraConfig,
+    
 )
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
     FeetechMotorsBusConfig,
+    SimulatedMotorsBusConfig,
     MotorsBusConfig,
 )
 
@@ -108,15 +111,15 @@ class AlohaRobotConfig(ManipulatorRobotConfig):
                 port="/dev/ttyDXL_leader_left",
                 motors={
                     # name: (index, model)
-                    "waist": [1, "xm430-w350"],
-                    "shoulder": [2, "xm430-w350"],
-                    "shoulder_shadow": [3, "xm430-w350"],
-                    "elbow": [4, "xm430-w350"],
-                    "elbow_shadow": [5, "xm430-w350"],
-                    "forearm_roll": [6, "xm430-w350"],
-                    "wrist_angle": [7, "xm430-w350"],
-                    "wrist_rotate": [8, "xl430-w250"],
-                    "gripper": [9, "xc430-w150"],
+                    "waist": (1, "xm430-w350"),
+                    "shoulder": (2, "xm430-w350"),
+                    "shoulder_shadow": (3, "xm430-w350"),
+                    "elbow": (4, "xm430-w350"),
+                    "elbow_shadow": (5, "xm430-w350"),
+                    "forearm_roll": (6, "xm430-w350"),
+                    "wrist_angle": (7, "xm430-w350"),
+                    "wrist_rotate": (8, "xl430-w250"),
+                    "gripper": (9, "xc430-w150"),
                 },
             ),
             "right": DynamixelMotorsBusConfig(
@@ -124,15 +127,15 @@ class AlohaRobotConfig(ManipulatorRobotConfig):
                 port="/dev/ttyDXL_leader_right",
                 motors={
                     # name: (index, model)
-                    "waist": [1, "xm430-w350"],
-                    "shoulder": [2, "xm430-w350"],
-                    "shoulder_shadow": [3, "xm430-w350"],
-                    "elbow": [4, "xm430-w350"],
-                    "elbow_shadow": [5, "xm430-w350"],
-                    "forearm_roll": [6, "xm430-w350"],
-                    "wrist_angle": [7, "xm430-w350"],
-                    "wrist_rotate": [8, "xl430-w250"],
-                    "gripper": [9, "xc430-w150"],
+                    "waist": (1, "xm430-w350"),
+                    "shoulder": (2, "xm430-w350"),
+                    "shoulder_shadow": (3, "xm430-w350"),
+                    "elbow": (4, "xm430-w350"),
+                    "elbow_shadow": (5, "xm430-w350"),
+                    "forearm_roll": (6, "xm430-w350"),
+                    "wrist_angle": (7, "xm430-w350"),
+                    "wrist_rotate": (8, "xl430-w250"),
+                    "gripper": (9, "xc430-w150"),
                 },
             ),
         }
@@ -144,30 +147,30 @@ class AlohaRobotConfig(ManipulatorRobotConfig):
                 port="/dev/ttyDXL_follower_left",
                 motors={
                     # name: (index, model)
-                    "waist": [1, "xm540-w270"],
-                    "shoulder": [2, "xm540-w270"],
-                    "shoulder_shadow": [3, "xm540-w270"],
-                    "elbow": [4, "xm540-w270"],
-                    "elbow_shadow": [5, "xm540-w270"],
-                    "forearm_roll": [6, "xm540-w270"],
-                    "wrist_angle": [7, "xm540-w270"],
-                    "wrist_rotate": [8, "xm430-w350"],
-                    "gripper": [9, "xm430-w350"],
+                    "waist": (1, "xm540-w270"),
+                    "shoulder": (2, "xm540-w270"),
+                    "shoulder_shadow": (3, "xm540-w270"),
+                    "elbow": (4, "xm540-w270"),
+                    "elbow_shadow": (5, "xm540-w270"),
+                    "forearm_roll": (6, "xm540-w270"),
+                    "wrist_angle": (7, "xm540-w270"),
+                    "wrist_rotate": (8, "xm430-w350"),
+                    "gripper": (9, "xm430-w350"),
                 },
             ),
             "right": DynamixelMotorsBusConfig(
                 port="/dev/ttyDXL_follower_right",
                 motors={
                     # name: (index, model)
-                    "waist": [1, "xm540-w270"],
-                    "shoulder": [2, "xm540-w270"],
-                    "shoulder_shadow": [3, "xm540-w270"],
-                    "elbow": [4, "xm540-w270"],
-                    "elbow_shadow": [5, "xm540-w270"],
-                    "forearm_roll": [6, "xm540-w270"],
-                    "wrist_angle": [7, "xm540-w270"],
-                    "wrist_rotate": [8, "xm430-w350"],
-                    "gripper": [9, "xm430-w350"],
+                    "waist": (1, "xm540-w270"),
+                    "shoulder": (2, "xm540-w270"),
+                    "shoulder_shadow": (3, "xm540-w270"),
+                    "elbow": (4, "xm540-w270"),
+                    "elbow_shadow": (5, "xm540-w270"),
+                    "forearm_roll": (6, "xm540-w270"),
+                    "wrist_angle": (7, "xm540-w270"),
+                    "wrist_rotate": (8, "xm430-w350"),
+                    "gripper": (9, "xm430-w350"),
                 },
             ),
         }
@@ -223,12 +226,12 @@ class KochRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0085511",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl330-m077"],
-                    "shoulder_lift": [2, "xl330-m077"],
-                    "elbow_flex": [3, "xl330-m077"],
-                    "wrist_flex": [4, "xl330-m077"],
-                    "wrist_roll": [5, "xl330-m077"],
-                    "gripper": [6, "xl330-m077"],
+                    "shoulder_pan": (1, "xl330-m077"),
+                    "shoulder_lift": (2, "xl330-m077"),
+                    "elbow_flex": (3, "xl330-m077"),
+                    "wrist_flex": (4, "xl330-m077"),
+                    "wrist_roll": (5, "xl330-m077"),
+                    "gripper": (6, "xl330-m077"),
                 },
             ),
         }
@@ -240,12 +243,12 @@ class KochRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0076891",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl430-w250"],
-                    "shoulder_lift": [2, "xl430-w250"],
-                    "elbow_flex": [3, "xl330-m288"],
-                    "wrist_flex": [4, "xl330-m288"],
-                    "wrist_roll": [5, "xl330-m288"],
-                    "gripper": [6, "xl330-m288"],
+                    "shoulder_pan": (1, "xl430-w250"),
+                    "shoulder_lift": (2, "xl430-w250"),
+                    "elbow_flex": (3, "xl330-m288"),
+                    "wrist_flex": (4, "xl330-m288"),
+                    "wrist_roll": (5, "xl330-m288"),
+                    "gripper": (6, "xl330-m288"),
                 },
             ),
         }
@@ -291,24 +294,24 @@ class KochBimanualRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0085511",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl330-m077"],
-                    "shoulder_lift": [2, "xl330-m077"],
-                    "elbow_flex": [3, "xl330-m077"],
-                    "wrist_flex": [4, "xl330-m077"],
-                    "wrist_roll": [5, "xl330-m077"],
-                    "gripper": [6, "xl330-m077"],
+                    "shoulder_pan": (1, "xl330-m077"),
+                    "shoulder_lift": (2, "xl330-m077"),
+                    "elbow_flex": (3, "xl330-m077"),
+                    "wrist_flex": (4, "xl330-m077"),
+                    "wrist_roll": (5, "xl330-m077"),
+                    "gripper": (6, "xl330-m077"),
                 },
             ),
             "right": DynamixelMotorsBusConfig(
                 port="/dev/tty.usbmodem575E0031751",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl330-m077"],
-                    "shoulder_lift": [2, "xl330-m077"],
-                    "elbow_flex": [3, "xl330-m077"],
-                    "wrist_flex": [4, "xl330-m077"],
-                    "wrist_roll": [5, "xl330-m077"],
-                    "gripper": [6, "xl330-m077"],
+                    "shoulder_pan": (1, "xl330-m077"),
+                    "shoulder_lift": (2, "xl330-m077"),
+                    "elbow_flex": (3, "xl330-m077"),
+                    "wrist_flex": (4, "xl330-m077"),
+                    "wrist_roll": (5, "xl330-m077"),
+                    "gripper": (6, "xl330-m077"),
                 },
             ),
         }
@@ -320,24 +323,24 @@ class KochBimanualRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0076891",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl430-w250"],
-                    "shoulder_lift": [2, "xl430-w250"],
-                    "elbow_flex": [3, "xl330-m288"],
-                    "wrist_flex": [4, "xl330-m288"],
-                    "wrist_roll": [5, "xl330-m288"],
-                    "gripper": [6, "xl330-m288"],
+                    "shoulder_pan": (1, "xl430-w250"),
+                    "shoulder_lift": (2, "xl430-w250"),
+                    "elbow_flex": (3, "xl330-m288"),
+                    "wrist_flex": (4, "xl330-m288"),
+                    "wrist_roll": (5, "xl330-m288"),
+                    "gripper": (6, "xl330-m288"),
                 },
             ),
             "right": DynamixelMotorsBusConfig(
                 port="/dev/tty.usbmodem575E0032081",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "xl430-w250"],
-                    "shoulder_lift": [2, "xl430-w250"],
-                    "elbow_flex": [3, "xl330-m288"],
-                    "wrist_flex": [4, "xl330-m288"],
-                    "wrist_roll": [5, "xl330-m288"],
-                    "gripper": [6, "xl330-m288"],
+                    "shoulder_pan": (1, "xl430-w250"),
+                    "shoulder_lift": (2, "xl430-w250"),
+                    "elbow_flex": (3, "xl330-m288"),
+                    "wrist_flex": (4, "xl330-m288"),
+                    "wrist_roll": (5, "xl330-m288"),
+                    "gripper": (6, "xl330-m288"),
                 },
             ),
         }
@@ -383,12 +386,12 @@ class MossRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem58760431091",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -400,12 +403,12 @@ class MossRobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0076891",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -446,12 +449,12 @@ class So101RobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem58760431091",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -463,12 +466,12 @@ class So101RobotConfig(ManipulatorRobotConfig):
                 port="/dev/tty.usbmodem585A0076891",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -506,15 +509,15 @@ class So100RobotConfig(ManipulatorRobotConfig):
     leader_arms: dict[str, MotorsBusConfig] = field(
         default_factory=lambda: {
             "main": FeetechMotorsBusConfig(
-                port="/dev/tty.usbmodem58760431091",
+                port="COM11",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -522,18 +525,18 @@ class So100RobotConfig(ManipulatorRobotConfig):
 
     follower_arms: dict[str, MotorsBusConfig] = field(
         default_factory=lambda: {
-            "main": FeetechMotorsBusConfig(
-                port="/dev/tty.usbmodem585A0076891",
-                motors={
-                    # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
-                },
-            ),
+            # "main": FeetechMotorsBusConfig(
+            #     port="COM11",
+            #     motors={
+            #         # name: (index, model)
+            #         "shoulder_pan": (1, "sts3215"),
+            #         "shoulder_lift": (2, "sts3215"),
+            #         "elbow_flex": (3, "sts3215"),
+            #         "wrist_flex": (4, "sts3215"),
+            #         "wrist_roll": (5, "sts3215"),
+            #         "gripper": (6, "sts3215"),
+            #     },
+            # ),
         }
     )
 
@@ -625,12 +628,12 @@ class LeKiwiRobotConfig(RobotConfig):
                 port="/dev/tty.usbmodem585A0077581",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                 },
             ),
         }
@@ -642,12 +645,12 @@ class LeKiwiRobotConfig(RobotConfig):
                 port="/dev/ttyACM0",
                 motors={
                     # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                    "gripper": [6, "sts3215"],
+                    "shoulder_pan": (1, "sts3215"),
+                    "shoulder_lift": (2, "sts3215"),
+                    "elbow_flex": (3, "sts3215"),
+                    "wrist_flex": (4, "sts3215"),
+                    "wrist_roll": (5, "sts3215"),
+                    "gripper": (6, "sts3215"),
                     "left_wheel": (7, "sts3215"),
                     "back_wheel": (8, "sts3215"),
                     "right_wheel": (9, "sts3215"),
@@ -674,3 +677,107 @@ class LeKiwiRobotConfig(RobotConfig):
     )
 
     mock: bool = False
+
+
+@dataclass
+class SimulatedRobotConfig(RobotConfig):
+    keyboard_input: bool = False
+    leader_arms: dict[str, MotorsBusConfig] = field(default_factory=lambda: {})
+    sim: dict[str, MotorsBusConfig] = field(default_factory=lambda: {})
+    cameras: dict[str, CameraConfig] = field(default_factory=lambda: {})
+
+    # Optionally limit the magnitude of the relative positional target vector for safety purposes.
+    # Set this to a positive scalar to have the same value for all motors, or a list that is the same length
+    # as the number of motors in your follower arms (assumes all follower arms have the same number of
+    # motors).
+    max_relative_target: list[float] | float | None = None
+
+    # Optionally set the leader arm in torque mode with the gripper motor set to this angle. This makes it
+    # possible to squeeze the gripper and have it spring back to an open position on its own. If None, the
+    # gripper is not put in torque mode.
+    gripper_open_degree: float | None = None
+
+    mock: bool = False
+
+    def __post_init__(self):
+        if self.mock:
+            if not self.keyboard_input:
+                for arm in self.leader_arms.values():
+                    if not arm.mock:
+                        arm.mock = True
+            for cam in self.cameras.values():
+                if not cam.mock:
+                    cam.mock = True
+
+
+@RobotConfig.register_subclass("sim-so100")
+@dataclass
+class Sim_so100RobotConfig(SimulatedRobotConfig):
+    calibration_dir: str = r"C:\Projects\AOSH-Sim\.cache\calibration\sim\so100"
+    # `max_relative_target` limits the magnitude of the relative positional target vector for safety purposes.
+    # Set this to a positive scalar to have the same value for all motors, or a list that is the same length as
+    # the number of motors in your follower arms.
+    max_relative_target: int | None = None
+
+    keyboard_input: bool = False
+
+    if not keyboard_input:
+        leader_arms: dict[str, MotorsBusConfig] = field(
+            default_factory=lambda: {
+                "main": FeetechMotorsBusConfig(
+                    port="COM11",
+                    motors={
+                        # name: (index, model)
+                        "shoulder_pan": (1, "sts3215"),
+                        "shoulder_lift": (2, "sts3215"),
+                        "elbow_flex": (3, "sts3215"),
+                        "wrist_flex": (4, "sts3215"),
+                        "wrist_roll": (5, "sts3215"),
+                        "gripper": (6, "sts3215"),
+                    },
+                ),
+            }
+        )
+    else:
+        leader_arms: dict[str, MotorsBusConfig] = None
+
+    sim: dict[str, MotorsBusConfig] = field(
+        default_factory=lambda: {
+            "main": SimulatedMotorsBusConfig(
+                handle="LerobotCube-v0",
+                params={
+                    'env': {
+                        'name': 'lowcostrobot',
+                        'fps': '50',
+                        'state_dim': 6,
+                        'action_dim': 6,
+                        'task': 'PushCube',
+                        'gym': {
+                            'render_mode': 'human',
+                            'max_episode_steps': 200,
+                            'reward_type': 'dense'
+                        },
+
+                    },
+                    'state_keys': {
+                        'observation.state': 'arm_qpos',
+                        'observation.velocity': 'arm_qvel'
+                    },
+                }
+            )
+        }
+    )
+
+    cameras: dict[str, CameraConfig] = field(
+        default_factory=lambda: {
+            "laptop": MujocoCameraConfig(
+                camera_index=0,
+                fps=30,
+                width=640,
+                height=480,
+            ),
+        }
+    )
+
+    mock: bool = False
+

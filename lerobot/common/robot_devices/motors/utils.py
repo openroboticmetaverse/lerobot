@@ -17,9 +17,11 @@ from typing import Protocol
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
     FeetechMotorsBusConfig,
+    SimulatedMotorsBusConfig,
     MotorsBusConfig,
 )
 
+import threading  as th
 
 class MotorsBus(Protocol):
     def motor_names(self): ...
@@ -43,6 +45,11 @@ def make_motors_buses_from_configs(motors_bus_configs: dict[str, MotorsBusConfig
             from lerobot.common.robot_devices.motors.feetech import FeetechMotorsBus
 
             motors_buses[key] = FeetechMotorsBus(cfg)
+        
+        elif cfg.type == "simulated":
+            from lerobot.common.robot_devices.motors.simulated_motors import SimulatedMotorsBus
+
+            motors_buses[key] = SimulatedMotorsBus(cfg)
 
         else:
             raise ValueError(f"The motor type '{cfg.type}' is not valid.")
@@ -63,5 +70,50 @@ def make_motors_bus(motor_type: str, **kwargs) -> MotorsBus:
         config = FeetechMotorsBusConfig(**kwargs)
         return FeetechMotorsBus(config)
 
+    elif motor_type == "simulated":
+        from lerobot.common.robot_devices.motors.simulated_motors import SimulatedMotorsBus
+
+        config = SimulatedMotorsBusConfig(**kwargs)
+        return SimulatedMotorsBus(config)
+
+
     else:
         raise ValueError(f"The motor type '{motor_type}' is not valid.")
+
+
+class dataBuffer:
+    def __init__(self):
+        self._lock = th.Lock()
+        self._condition = th.Condition(self._lock)
+        self._value = None
+        self._new_data = False
+        self._closed = False
+
+    def write(self, value):
+        with self._lock:
+            if self._closed:
+                raise RuntimeError("Buffer is closed")
+            self._value = value
+            self._new_data = True
+            self._condition.notify_all()
+            return True
+        return False
+
+    def read(self):
+        with self._lock:
+            while not self._new_data and not self._closed:
+                self._condition.wait(timeout=0.01)
+            if self._closed:
+                raise RuntimeError("Buffer is closed")
+            value = self._value
+            self._new_data = False
+            return value
+
+    def check_new_data(self):
+        with self._lock:
+            return self._new_data
+
+    def close(self):
+        with self._lock:
+            self._closed = True
+            self._condition.notify_all()
