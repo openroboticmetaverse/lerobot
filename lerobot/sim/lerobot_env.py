@@ -78,7 +78,7 @@ class LerobotEnv(Env):
 
     def __init__(
         self,
-        observation_mode="image",
+        observation_mode="both",
         action_mode="joint",
         reward_type="sparse",
         block_gripper=False,

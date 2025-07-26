@@ -190,7 +190,7 @@ available_robots = [
 available_cameras = [
     "opencv",
     "intelrealsense",
-    "simulated"
+    "simulated-camera"
 ]
 
 # lists all available motors from `lerobot/common/robot_devices/motors`

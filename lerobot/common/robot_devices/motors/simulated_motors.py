@@ -44,8 +44,8 @@ class SimulatedMotorsBus:
         self.params = config.params['env']['gym']
         self.thread = None
         self.stop_event = th.Event()
-        self.sim_target_pose = dataBuffer()
-        self.sim_current_pose = dataBuffer()
+        self.sim_target_pose_buffer = dataBuffer()
+        self.sim_current_pose_buffer = dataBuffer()
         self.is_connected = False
         self.group_readers = {}
         self.group_writers = {}
@@ -55,7 +55,7 @@ class SimulatedMotorsBus:
         
     
     @staticmethod
-    def run_simulation(handle, stop_event, q_sim_target_pose: dataBuffer, q_sim_current_pose: dataBuffer, env_parms, teleop_time_s=None):
+    def run_simulation(handle, stop_event, q_sim_target_pose_db: dataBuffer, q_sim_current_pose_db: dataBuffer, env_parms, teleop_time_s=None):
         from gymnasium.envs.registration import register
 
         register(
@@ -79,8 +79,8 @@ class SimulatedMotorsBus:
                 i += 1
                 # Simulate the robot's behavior
                 
-                if q_sim_target_pose.check_new_data():
-                    curr_leader_pos = q_sim_target_pose.read()
+                if q_sim_target_pose_db.check_new_data():
+                    curr_leader_pos = q_sim_target_pose_db.read()
                     
                 if curr_leader_pos is not None and curr_sim_pose is not None:
                     action = curr_leader_pos - curr_sim_pose
@@ -89,7 +89,9 @@ class SimulatedMotorsBus:
                 
                 observation, reward, terminted, truncated, info = env.step(action)
                 curr_sim_pose = np.array(observation['arm_qpos'], dtype=np.float32)
-                q_sim_current_pose.write(curr_sim_pose)
+                images = {"front": observation["image_front"], "top": observation["image_top"]}
+                write_data = [curr_sim_pose, images]
+                q_sim_current_pose_db.write(write_data)
 
                 # time.sleep(0.01)
                 
@@ -119,7 +121,7 @@ class SimulatedMotorsBus:
             )
         try:
             "Try to connect to the bus"
-            self.thread = th.Thread(target=self.run_simulation, args=(self.handle, self.stop_event, self.sim_target_pose, self.sim_current_pose, self.params), daemon = True)
+            self.thread = th.Thread(target=self.run_simulation, args=(self.handle, self.stop_event, self.sim_target_pose_buffer, self.sim_current_pose_buffer, self.params), daemon = True)
             self.thread.start()
             self.stop_event.clear()
         except Exception:
@@ -133,7 +135,7 @@ class SimulatedMotorsBus:
     def reconnect(self):
         try:
             "Try to connect to the bus"
-            if self.thread is None: self.thread = th.Thread(target=self.run_simulation, args=(self.handle, self.stop_event, self.sim_target_pose, self.sim_current_pose, self.params), daemon = True)
+            if self.thread is None: self.thread = th.Thread(target=self.run_simulation, args=(self.handle, self.stop_event, self.sim_target_pose_buffer, self.sim_current_pose_buffer, self.params), daemon = True)
     
             self.thread.start()
             self.stop_event.clear()
@@ -167,8 +169,7 @@ class SimulatedMotorsBus:
         return values
     
     def read(self):
-        curr_sim_pose = self.sim_current_pose.read()
-        curr_sim_pose = np.array(curr_sim_pose, dtype=np.float32)
+        curr_sim_pose = self.sim_current_pose_buffer.read()
         return curr_sim_pose
     
     def apply_calibration(self):
@@ -182,7 +183,7 @@ class SimulatedMotorsBus:
         values = np.array(values)
         values = self.real_positions_to_sim(values)
         values = values.tolist()
-        self.sim_target_pose.write(values)
+        self.sim_target_pose_buffer.write(values)
 
     def disconnect(self):
         if not self.is_connected:

@@ -114,9 +114,9 @@ class IntelRealSenseCameraConfig(CameraConfig):
             raise ValueError(f"`rotation` must be in [-90, None, 90, 180] (got {self.rotation})")
 
 
-@CameraConfig.register_subclass("mujoco")
+@CameraConfig.register_subclass("simulated-camera")
 @dataclass
-class MujocoCameraConfig(CameraConfig):
+class SimulatedCameraConfig(CameraConfig):
     """
     Example of tested options for Intel Real Sense D405:
 

@@ -22,7 +22,7 @@ from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
-    MujocoCameraConfig,
+    SimulatedCameraConfig,
     
 )
 from lerobot.common.robot_devices.motors.configs import (
@@ -713,7 +713,7 @@ class SimulatedRobotConfig(RobotConfig):
 @RobotConfig.register_subclass("sim-so100")
 @dataclass
 class Sim_so100RobotConfig(SimulatedRobotConfig):
-    calibration_dir: str = r"C:\Projects\AOSH-Sim\.cache\calibration\sim\so100"
+    calibration_dir: str = Path to your calibration file r".\.cache\calibration\sim\so100"
     # `max_relative_target` limits the magnitude of the relative positional target vector for safety purposes.
     # Set this to a positive scalar to have the same value for all motors, or a list that is the same length as
     # the number of motors in your follower arms.
@@ -770,11 +770,17 @@ class Sim_so100RobotConfig(SimulatedRobotConfig):
 
     cameras: dict[str, CameraConfig] = field(
         default_factory=lambda: {
-            "laptop": MujocoCameraConfig(
+            "front": SimulatedCameraConfig(
                 camera_index=0,
                 fps=30,
-                width=640,
-                height=480,
+                width=320,
+                height=240,
+            ),
+            "top": SimulatedCameraConfig(
+                camera_index=0,
+                fps=30,
+                width=320,
+                height=240,
             ),
         }
     )

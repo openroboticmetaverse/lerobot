@@ -69,7 +69,7 @@ class SimulatedRobot:
         self.leader_arms = make_motors_buses_from_configs(self.config.leader_arms) if not self.keyboard_input else None
         self.sim = make_motors_buses_from_configs(self.config.sim)
         self.follower_arms = self.sim
-        self.cameras = {} # make_cameras_from_configs(self.config.cameras)
+        self.cameras = make_cameras_from_configs(self.config.cameras)
         self.is_connected = False
         self.logs = {}
 
@@ -277,8 +277,10 @@ class SimulatedRobot:
         # TODO(rcadene): Add velocity and other info
         # Read follower position
         follower_pos = {}
+        rendered_images = None
         for name in self.sim:
-            follower_pos[name] = self.sim[name].read()
+            q_pos, rendered_images = self.sim[name].read()
+            follower_pos[name] = q_pos
             follower_pos[name] = torch.from_numpy(follower_pos[name])
 
         # Create state by concatenating follower current position
@@ -298,7 +300,7 @@ class SimulatedRobot:
         # Capture images from cameras
         images = {}
         for name in self.cameras:
-            images[name] = self.cameras[name].async_read()
+            images[name] = rendered_images[name]
             images[name] = torch.from_numpy(images[name])
 
         # Populate output dictionaries
@@ -320,8 +322,10 @@ class SimulatedRobot:
 
         # Read follower position
         follower_pos = {}
+        rendered_images = None
         for name in self.sim:
-            follower_pos[name] = self.sim[name].read()
+            q_pos, rendered_images = self.sim[name].read()
+            follower_pos[name] = q_pos
             follower_pos[name] = torch.from_numpy(follower_pos[name])
 
         # Create state by concatenating follower current position
@@ -334,7 +338,7 @@ class SimulatedRobot:
         # Capture images from cameras
         images = {}
         for name in self.cameras:
-            images[name] = self.cameras[name].async_read()
+            images[name] = rendered_images[name]
             images[name] = torch.from_numpy(images[name])
 
         # Populate output dictionaries and format to pytorch
@@ -371,7 +375,7 @@ class SimulatedRobot:
             # Cap goal position when too far away from present position.
             # Slower fps expected due to reading from the follower.
             if self.config.max_relative_target is not None:
-                present_pos = self.sim[name].read()
+                present_pos, rendered_images = self.sim[name].read()
                 present_pos = torch.from_numpy(present_pos)
                 goal_pos = ensure_safe_goal_position(goal_pos, present_pos, self.config.max_relative_target)
 

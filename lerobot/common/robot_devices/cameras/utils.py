@@ -20,6 +20,7 @@ from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
+    SimulatedCameraConfig
 )
 from typing import Dict
 
@@ -45,8 +46,15 @@ def make_cameras_from_configs(camera_configs: dict[str, CameraConfig]) -> list[C
             from lerobot.common.robot_devices.cameras.intelrealsense import IntelRealSenseCamera
 
             cameras[key] = IntelRealSenseCamera(cfg)
+
+        elif cfg.type == "simulated-camera":
+            from lerobot.common.robot_devices.cameras.simulated_camera import SimulatedCamera
+
+            cameras[key] = SimulatedCamera(cfg)
+
         else:
             raise ValueError(f"The camera type '{cfg.type}' is not valid.")
+
 
     return cameras
 
@@ -63,6 +71,12 @@ def make_camera(camera_type, **kwargs) -> Camera:
 
         config = IntelRealSenseCameraConfig(**kwargs)
         return IntelRealSenseCamera(config)
+
+    elif camera_type == "simulated-camera":
+        from lerobot.common.robot_devices.cameras.simulated_camera import SimulatedCamera
+
+        config = SimulatedCameraConfig(**kwargs)
+        return SimulatedCamera(config)
 
     else:
         raise ValueError(f"The camera type '{camera_type}' is not valid.")
