@@ -15,14 +15,23 @@
 # limitations under the License.
 
 import time
-from dataclasses import replace
+from dataclasses import dataclass, field, replace
 
 import torch
 from stretch_body.gamepad_teleop import GamePadTeleop
 from stretch_body.robot import Robot as StretchAPI
 from stretch_body.robot_params import RobotParams
 
-from lerobot.common.robot_devices.robots.configs import StretchRobotConfig
+from lerobot.common.robot_devices.cameras.utils import Camera
+
+
+@dataclass
+class StretchRobotConfig:
+    robot_type: str | None = "stretch"
+    cameras: dict[str, Camera] = field(default_factory=lambda: {})
+    # TODO(aliberts): add feature with max_relative target
+    # TODO(aliberts): add comment on max_relative target
+    max_relative_target: list[float] | float | None = None
 
 
 class StretchRobot(StretchAPI):
@@ -31,12 +40,11 @@ class StretchRobot(StretchAPI):
     def __init__(self, config: StretchRobotConfig | None = None, **kwargs):
         super().__init__()
         if config is None:
-            self.config = StretchRobotConfig(**kwargs)
-        else:
-            # Overwrite config arguments using kwargs
-            self.config = replace(config, **kwargs)
+            config = StretchRobotConfig()
+        # Overwrite config arguments using kwargs
+        self.config = replace(config, **kwargs)
 
-        self.robot_type = self.config.type
+        self.robot_type = self.config.robot_type
         self.cameras = self.config.cameras
         self.is_connected = False
         self.teleop = None
@@ -108,7 +116,7 @@ class StretchRobot(StretchAPI):
             self.logs[f"read_camera_{name}_dt_s"] = self.cameras[name].logs["delta_timestamp_s"]
             self.logs[f"async_read_camera_{name}_dt_s"] = time.perf_counter() - before_camread_t
 
-        # Populate output dictionaries
+        # Populate output dictionnaries
         obs_dict, action_dict = {}, {}
         obs_dict["observation.state"] = state
         action_dict["action"] = action
@@ -153,7 +161,7 @@ class StretchRobot(StretchAPI):
             self.logs[f"read_camera_{name}_dt_s"] = self.cameras[name].logs["delta_timestamp_s"]
             self.logs[f"async_read_camera_{name}_dt_s"] = time.perf_counter() - before_camread_t
 
-        # Populate output dictionaries
+        # Populate output dictionnaries
         obs_dict = {}
         obs_dict["observation.state"] = state
         for name in self.cameras:

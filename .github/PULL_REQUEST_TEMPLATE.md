@@ -21,7 +21,7 @@ Provide a simple way for the reviewer to try out your changes.
 
 Examples:
 ```bash
-pytest -sx tests/test_stuff.py::test_something
+DATA_DIR=tests/data pytest -sx tests/test_stuff.py::test_something
 ```
 ```bash
 python lerobot/scripts/train.py --some.option=true

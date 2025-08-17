@@ -17,21 +17,12 @@
 
 import argparse
 import datetime as dt
-import os
-import time
 from pathlib import Path
 
 import cv2
-import rerun as rr
-
-# see https://rerun.io/docs/howto/visualization/limit-ram
-RERUN_MEMORY_LIMIT = os.getenv("LEROBOT_RERUN_MEMORY_LIMIT", "5%")
 
 
-def display_and_save_video_stream(output_dir: Path, fps: int, width: int, height: int, duration: int):
-    rr.init("lerobot_capture_camera_feed")
-    rr.spawn(memory_limit=RERUN_MEMORY_LIMIT)
-
+def display_and_save_video_stream(output_dir: Path, fps: int, width: int, height: int):
     now = dt.datetime.now()
     capture_dir = output_dir / f"{now:%Y-%m-%d}" / f"{now:%H-%M-%S}"
     if not capture_dir.exists():
@@ -48,21 +39,24 @@ def display_and_save_video_stream(output_dir: Path, fps: int, width: int, height
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
     frame_index = 0
-    start_time = time.time()
-    while time.time() - start_time < duration:
+    while True:
         ret, frame = cap.read()
 
         if not ret:
             print("Error: Could not read frame.")
             break
-        rr.log("video/stream", rr.Image(frame.numpy()), static=True)
+
+        cv2.imshow("Video Stream", frame)
         cv2.imwrite(str(capture_dir / f"frame_{frame_index:06d}.png"), frame)
         frame_index += 1
 
-    # Release the capture
-    cap.release()
+        # Break the loop on 'q' key press
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
 
-    # TODO(Steven): Add a graceful shutdown via a close() method for the Viewer context, though not currently supported in the Rerun API.
+    # Release the capture and destroy all windows
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
@@ -91,12 +85,6 @@ if __name__ == "__main__":
         type=int,
         default=720,
         help="Height of the captured images.",
-    )
-    parser.add_argument(
-        "--duration",
-        type=int,
-        default=20,
-        help="Duration in seconds for which the video stream should be captured.",
     )
     args = parser.parse_args()
     display_and_save_video_stream(**vars(args))

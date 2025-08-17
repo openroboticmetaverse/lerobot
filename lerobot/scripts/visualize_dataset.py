@@ -15,14 +15,14 @@
 # limitations under the License.
 """ Visualize data of **all** frames of any episode of a dataset of type LeRobotDataset.
 
-Note: The last frame of the episode doesn't always correspond to a final state.
+Note: The last frame of the episode doesnt always correspond to a final state.
 That's because our datasets are composed of transition from state to state up to
 the antepenultimate state associated to the ultimate action to arrive in the final state.
 However, there might not be a transition from a final state to another state.
 
 Note: This script aims to visualize the data used to train the neural networks.
 ~What you see is what you get~. When visualizing image modality, it is often expected to observe
-lossy compression artifacts since these images have been decoded from compressed mp4 videos to
+lossly compression artifacts since these images have been decoded from compressed mp4 videos to
 save disk space. The compression factor applied has been tuned to not affect success rate.
 
 Examples:
@@ -100,7 +100,7 @@ def to_hwc_uint8_numpy(chw_float32_torch: torch.Tensor) -> np.ndarray:
 
 
 def visualize_dataset(
-    dataset: LeRobotDataset,
+    repo_id: str,
     episode_index: int,
     batch_size: int = 32,
     num_workers: int = 0,
@@ -108,14 +108,16 @@ def visualize_dataset(
     web_port: int = 9090,
     ws_port: int = 9087,
     save: bool = False,
+    root: Path | None = None,
     output_dir: Path | None = None,
 ) -> Path | None:
     if save:
-        assert output_dir is not None, (
-            "Set an output directory where to write .rrd files with `--output-dir path/to/directory`."
-        )
+        assert (
+            output_dir is not None
+        ), "Set an output directory where to write .rrd files with `--output-dir path/to/directory`."
 
-    repo_id = dataset.repo_id
+    logging.info("Loading dataset")
+    dataset = LeRobotDataset(repo_id, root=root)
 
     logging.info("Loading dataloader")
     episode_sampler = EpisodeSampler(dataset, episode_index)
@@ -151,7 +153,7 @@ def visualize_dataset(
             rr.set_time_seconds("timestamp", batch["timestamp"][i].item())
 
             # display each camera image
-            for key in dataset.meta.camera_keys:
+            for key in dataset.camera_keys:
                 # TODO(rcadene): add `.compress()`? is it lossless?
                 rr.log(key, rr.Image(to_hwc_uint8_numpy(batch[key][i])))
 
@@ -199,7 +201,7 @@ def main():
         "--repo-id",
         type=str,
         required=True,
-        help="Name of hugging face repository containing a LeRobotDataset dataset (e.g. `lerobot/pusht`).",
+        help="Name of hugging face repositery containing a LeRobotDataset dataset (e.g. `lerobot/pusht`).",
     )
     parser.add_argument(
         "--episode-index",
@@ -211,7 +213,7 @@ def main():
         "--root",
         type=Path,
         default=None,
-        help="Root directory for the dataset stored locally (e.g. `--root data`). By default, the dataset will be loaded from hugging face cache folder, or downloaded from the hub if available.",
+        help="Root directory for a dataset stored locally (e.g. `--root data`). By default, the dataset will be loaded from hugging face cache folder, or downloaded from the hub if available.",
     )
     parser.add_argument(
         "--output-dir",
@@ -265,27 +267,8 @@ def main():
         ),
     )
 
-    parser.add_argument(
-        "--tolerance-s",
-        type=float,
-        default=1e-4,
-        help=(
-            "Tolerance in seconds used to ensure data timestamps respect the dataset fps value"
-            "This is argument passed to the constructor of LeRobotDataset and maps to its tolerance_s constructor argument"
-            "If not given, defaults to 1e-4."
-        ),
-    )
-
     args = parser.parse_args()
-    kwargs = vars(args)
-    repo_id = kwargs.pop("repo_id")
-    root = kwargs.pop("root")
-    tolerance_s = kwargs.pop("tolerance_s")
-
-    logging.info("Loading dataset")
-    dataset = LeRobotDataset(repo_id, root=root, tolerance_s=tolerance_s)
-
-    visualize_dataset(dataset, **vars(args))
+    visualize_dataset(**vars(args))
 
 
 if __name__ == "__main__":
